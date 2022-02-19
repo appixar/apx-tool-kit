@@ -1,2 +1,41 @@
 <?php
-echo 1;
+include __DIR__ . "/include/global.php";
+
+// HELP
+$help = "php vhost-create domain.com [www.domain.com]";
+
+// PARAMETERS
+$domain = @$args[0];
+$alias_domain = @$argv[1];
+$restart = @$argx['--restart'];
+$conf_file = "/etc/apache2/sites-available/$domain.conf";
+
+// BASH CMD
+exec("mkdir -p /var/www/$domain/public_html");
+exec("chown -R www-data:www-data /var/www/$domain/public_html");
+exec("touch $conf_file");
+
+// WRITE CONF
+$conf_data = "
+<VirtualHost *:80>
+    ServerName $domain
+    ServerAlias $domain
+    ServerAdmin admin@$domain
+    DocumentRoot /var/www/$domain/public_html
+    ErrorLog /var/log/apache2/www/error-$domain.log
+    CustomLog /var/log/apache2/www/access-$domain.log combined
+</VirtualHost>\n
+<Directory '/var/www/$domain/public_html'>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride all
+    Order allow,deny
+    Allow from all
+</Directory>\n";
+
+file_put_contents($conf_file, $conf_data);
+exec("a2ensite $domain.conf");
+exec("systemctl reload apache2");
+
+// CB
+echo "VHOST created: $domain" . PHP_EOL;
+echo "Don't forget: certbot and DNS pointing! :)" . PHP_EOL;
