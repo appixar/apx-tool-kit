@@ -11,27 +11,32 @@ $alias_domain = @$argv[1];
 $restart = @$argx['--restart'];
 $conf_file = "/etc/apache2/sites-available/$domain.conf";
 
+if (!$domain) {
+    echo $help . PHP_EOL;
+    exit;
+}
+
 // BASH CMD
-exec("mkdir -p /var/www/$domain/public_html");
-exec("chown -R www-data:www-data /var/www/$domain/public_html");
+exec("mkdir -p /var/www/$domain/public");
+exec("chown -R www-data:www-data /var/www/$domain/public");
 exec("touch $conf_file");
 
 // WRITE CONF
-$conf_data = "
+$conf_data = '
 <VirtualHost *:80>
-    ServerName $domain
-    ServerAlias $domain
-    ServerAdmin admin@$domain
-    DocumentRoot /var/www/$domain/public_html
-    ErrorLog /var/log/apache2/www/error-$domain.log
-    CustomLog /var/log/apache2/www/access-$domain.log combined
-</VirtualHost>\n
-<Directory '/var/www/$domain/public_html'>
+    ServerName ' . $domain . '
+    ServerAlias ' . $domain . '
+    ServerAdmin admin@' . $domain . '
+    DocumentRoot /var/www/' . $domain . '/public
+    ErrorLog ${APACHE_LOG_DIR}/error-' . $domain . '.log
+    CustomLog ${APACHE_LOG_DIR}/access-' . $domain . '.log combined
+</VirtualHost>
+<Directory "/var/www/' . $domain . '/public">
     Options Indexes FollowSymLinks MultiViews
     AllowOverride all
     Order allow,deny
     Allow from all
-</Directory>\n";
+</Directory>';
 
 file_put_contents($conf_file, $conf_data);
 exec("a2ensite $domain.conf");
