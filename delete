@@ -1,0 +1,30 @@
+<?php
+// INC
+include __DIR__ . "/include/global.php";
+
+// HELP
+$help = "php delete sub.domain.com";
+
+// PARAMETERS
+$domain = @$args[0];
+$conf_file = "/etc/apache2/sites-available/$domain.conf";
+$conf_file_ssl = "/etc/apache2/sites-available/$domain-le-ssl.conf";
+
+if (!$domain) {
+    echo $help . PHP_EOL;
+    exit;
+}
+
+// BASH CMD
+exec("a2dissite $domain");
+echo "* Domain disabled" . PHP_EOL;
+
+exec("rm -rf /var/www/$domain");
+echo "* Removed: /var/www/$domain" . PHP_EOL;
+
+exec("rm $conf_file");
+exec("rm $conf_file_ssl");
+echo "* Removed apache configs" . PHP_EOL;
+
+exec("systemctl reload apache2");
+echo "* Done!" . PHP_EOL;
