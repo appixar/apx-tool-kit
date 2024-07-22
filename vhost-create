@@ -49,6 +49,6 @@ exec("systemctl reload apache2");
 // CB
 echo "VHOST created: $domain" . PHP_EOL;
 echo "Don't forget: certbot and DNS pointing! :)" . PHP_EOL;
-if ($alias_domain != $domain) {
-    echo "* Important: 2 certificates required: $domain and $alias_domain" . PHP_EOL;
-}
+$cmd_domains = "-d $domain ";
+if ($alias_domain != $domain) $cmd_domains .= "-d $alias_domain";
+echo "Enter: sudo certbot --apache $cmd_domains" . PHP_EOL;
