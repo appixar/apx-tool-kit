@@ -16,6 +16,9 @@ if (!$domain) {
     echo $help . PHP_EOL;
     exit;
 }
+echo "Creating domain $domain..." . PHP_EOL;
+if ($alias_domain != $domain) echo "Alias (www): NO!" . PHP_EOL;
+else echo "Alias (www): $alias_domain" . PHP_EOL;
 
 // BASH CMD
 exec("mkdir -p /var/www/$domain/public");
@@ -46,3 +49,6 @@ exec("systemctl reload apache2");
 // CB
 echo "VHOST created: $domain" . PHP_EOL;
 echo "Don't forget: certbot and DNS pointing! :)" . PHP_EOL;
+if ($alias_domain != $domain) {
+    echo "* Important: 2 certificates required: $domain and $alias_domain" . PHP_EOL;
+}
