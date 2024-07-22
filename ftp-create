@@ -1,0 +1,37 @@
+<?php
+// INC
+include __DIR__ . "/include/global.php";
+
+// HELP
+$help = "php ftp-create <user> <pass> <domain.com>";
+
+// PARAMETERS
+$user = @$args[0];
+$pass = @$args[1];
+$domain = @$args[2];
+$conf_file = "/etc/vsftpd_user_conf/$user";
+
+if (!$domain or !$user or !$pass) {
+    echo $help . PHP_EOL;
+    exit;
+}
+if (!file_exists("/var/www/$domain")) {
+    echo "Directory not exists: /var/www/$domain" . PHP_EOL;
+    echo $help . PHP_EOL;
+    exit;
+}
+
+// BASH CMD
+exec("sudo useradd -M $user && echo \"$user:$pass\" | sudo chpasswd");
+exec("sudo usermod -a -G www-data $user");
+exec("sudo usermod -d /var/www/$domain $user");
+exec("sudo touch $conf_file");
+
+// WRITE CONF
+$conf_data = "local_root=/var/www/$domain";
+file_put_contents($conf_file, $conf_data);
+exec("sudo systemctl restart vsftpd");
+
+// CB
+echo "FTP user created: $user" . PHP_EOL;
+echo "FTP directory: /var/www/$domain" . PHP_EOL;

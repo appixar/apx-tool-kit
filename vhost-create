@@ -8,6 +8,7 @@ $help = "php vhost-create domain.com [www.domain.com]";
 // PARAMETERS
 $domain = @$args[0];
 $alias_domain = @$argv[1];
+if (!$alias_domain) $alias_domain = $domain;
 $restart = @$argx['--restart'];
 $conf_file = "/etc/apache2/sites-available/$domain.conf";
 
@@ -25,7 +26,7 @@ exec("touch $conf_file");
 $conf_data = '
 <VirtualHost *:80>
     ServerName ' . $domain . '
-    ServerAlias ' . $domain . '
+    ServerAlias ' . $alias_domain . '
     ServerAdmin admin@' . $domain . '
     DocumentRoot /var/www/' . $domain . '/public
     ErrorLog ${APACHE_LOG_DIR}/error-' . $domain . '.log
