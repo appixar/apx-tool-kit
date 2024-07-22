@@ -31,6 +31,7 @@ $conf_data = '
     DocumentRoot /var/www/' . $domain . '/public
     ErrorLog ${APACHE_LOG_DIR}/error-' . $domain . '.log
     CustomLog ${APACHE_LOG_DIR}/access-' . $domain . '.log combined
+    Redirect permanent / https://'.$domain.'
 </VirtualHost>
 <Directory "/var/www/' . $domain . '/public">
     Options Indexes FollowSymLinks MultiViews
