@@ -17,7 +17,7 @@ if (!$domain) {
     exit;
 }
 echo "Creating domain $domain..." . PHP_EOL;
-if ($alias_domain != $domain) echo "Alias (www): NO!" . PHP_EOL;
+if ($alias_domain == $domain) echo "Alias (www): NO!" . PHP_EOL;
 else echo "Alias (www): $alias_domain" . PHP_EOL;
 
 // BASH CMD

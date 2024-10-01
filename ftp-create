@@ -25,6 +25,8 @@ if (!file_exists("/var/www/$domain")) {
 exec("sudo useradd -M $user && echo \"$user:$pass\" | sudo chpasswd");
 exec("sudo usermod -a -G www-data $user");
 exec("sudo usermod -d /var/www/$domain $user");
+exec("sudo chown -R :www-data /var/www/$domain");
+exec("sudo chmod -R 775 /var/www/$domain");
 exec("sudo touch $conf_file");
 
 // WRITE CONF

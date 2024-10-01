@@ -1,0 +1,23 @@
+<?php
+// INC
+include __DIR__ . "/include/global.php";
+
+// HELP
+$help = "php ftp-delete <user>";
+
+// PARAMETERS
+$user = @$args[0];
+$conf_file = "/etc/vsftpd_user_conf/$user";
+
+if (!$user) {
+    echo $help . PHP_EOL;
+    exit;
+}
+
+// BASH CMD
+exec("sudo userdel $user");
+exec("sudo rm $conf_file");
+exec("sudo systemctl restart vsftpd");
+
+// CB
+echo "FTP user deleted: $user" . PHP_EOL;
